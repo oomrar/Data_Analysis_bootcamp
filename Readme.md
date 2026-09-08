@@ -18,13 +18,4 @@ The repository is organized to cover the complete stack of modern data science a
 
 ---
 
-## 🛠️ Tech Stack & Environment
-
-- **Databases:** Microsoft SQL Server (via Docker on macOS) / MySQL
-- **IDE & Editors:** Visual Studio Code, Jupyter Notebooks
-- **BI Tools:** Power BI, Microsoft Excel
-- **Version Control:** Git & GitHub
-
----
-
 ⭐️ *Feel free to explore the code and notes as I progress through the modules!*
