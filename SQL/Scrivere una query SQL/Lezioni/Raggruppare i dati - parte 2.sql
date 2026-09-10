@@ -149,6 +149,13 @@ ORDER BY Fatturato DESC;
 /*Commento:
 combinando le clausole ORDER BY e TOP possiamo svolgere 
 tutta una classe di analisi come quella appena vista*/
+
+
+SELECT TOP 1 WITH TIES YEAR(DataFattura) AS Anno, 
+	     SUM(Importo) AS Fatturato
+FROM     dbo.Fatture
+GROUP BY YEAR(DataFattura)
+ORDER BY Fatturato DESC;
  
 
 
