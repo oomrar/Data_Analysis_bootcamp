@@ -81,4 +81,84 @@ INNER JOIN dbo.Fatture AS f
 GROUP BY c.RegioneResidenza 
 
 
-/* Riprendere da punto 3, numero tre su notebooklm
+/* 11 */
+SELECT fo.Denominazione, AVG(fa.Importo) AS Importo
+FROM dbo.Fatture AS fa
+FULL JOIN dbo.Fornitori AS fo
+    ON fa.IdFornitore = fo.IdFornitore
+GROUP BY fo.Denominazione;
+
+
+/* 12 */
+SELECT YEAR(f.DataFattura) AS Anno, c.RegioneResidenza, SUM(f.Importo) AS SommaImporti
+FROM dbo.Fatture AS f   
+INNER JOIN dbo.Clienti AS c 
+    ON f.IdCliente = c.IdCliente
+GROUP BY YEAR(f.DataFattura), c.RegioneResidenza;
+
+
+/* 13 */
+SELECT fo.Denominazione, COUNT(fa.IdFattura) AS NumeroFatture
+FROM dbo.Fornitori AS fo
+LEFT JOIN dbo.Fatture AS fa
+    ON fo.IdFornitore = fa.IdFornitore
+GROUP BY fo.Denominazione;
+
+
+/* 14 */
+SELECT c.Nome, c.Cognome, SUM(f.Importo) AS SommaImporti
+FROM dbo.Clienti AS c  
+INNER JOIN dbo.Fatture AS f  
+    ON c.IdCliente = f.IdCliente
+GROUP BY c.Nome, c.Cognome
+HAVING SUM(f.Importo) > 100;
+
+
+/* 15 */
+SELECT fo.Denominazione, COUNT(fa.IdFattura) AS NumeroFatture
+FROM dbo.Fornitori AS fo
+INNER JOIN dbo.Fatture AS fa
+    ON fo.IdFornitore = fa.IdFornitore
+GROUP BY fo.Denominazione
+HAVING COUNT(fa.IdFattura) > 2;
+
+
+/* 16 */
+SELECT TOP 3 c.Nome, c.Cognome, SUM(f.Importo) AS TotaleFatturato
+FROM dbo.Clienti AS c  
+INNER JOIN dbo.Fatture AS f
+    ON c.IdCliente = f.IdCliente
+WHERE YEAR(f.DataFattura) = 2019
+GROUP BY c.Nome, c.Cognome
+ORDER BY SUM(f.Importo) DESC
+
+
+/* 17 */
+SELECT Nome, Cognome, 'Clienti' AS TipoAnagrafica
+FROM dbo.Clienti
+UNION ALL
+SELECT Nome, Cognome, 'Prospect' AS TipoAnagrafica
+FROM dbo.Prospect;
+
+
+/* 18 */
+SELECT Nome, Cognome
+FROM dbo.Clienti
+INTERSECT 
+SELECT Nome, Cognome
+FROM dbo.Prospect;
+
+
+/* 19 */
+SELECT Nome, Cognome
+FROM dbo.Clienti
+EXCEPT 
+SELECT Nome, Cognome
+FROM dbo.Prospect;
+
+
+/* 20 */
+SELECT fa.IdFattura, fa.Importo, fo.Denominazione
+FROM dbo.Fatture AS fa  
+FULL JOIN dbo.Fornitori AS fo
+    ON fa.IdFornitore = fo.IdFornitore;
