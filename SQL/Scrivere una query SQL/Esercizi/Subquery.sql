@@ -92,4 +92,69 @@ FROM Step1
 WHERE Conteggio > 3
 
 
-/* Continua dall'esercizio 10 su notlmn
+/* 10 */
+
+SELECT *
+FROM dbo.Fatture 
+WHERE IdCliente IN ( SELECT IdCliente
+                     FROM dbo.Clienti
+                     WHERE RegioneResidenza IN (SELECT RegioneResidenza
+                                                FROM dbo.Fornitori
+                                                WHERE FornitoreAttivo = 1
+                                                 ))
+                            
+
+/* 11 */
+
+SELECT IdCliente, Nome, Cognome
+FROM dbo.Clienti AS C
+WHERE EXISTS (SELECT *
+              FROM dbo.Fatture AS F
+              WHERE C.IdCliente = F.IdCliente
+              AND YEAR(DataFattura) = 2018
+              )
+
+
+/* 12 */
+
+SELECT *
+INTO #ProdottiAttivii
+FROM dbo.Prodotti
+WHERE InCommercio = 1
+
+SELECT RegioneProduzione, AVG(Costo) AS CostoMedio
+FROM #ProdottiAttivii
+GROUP BY RegioneProduzione 
+
+
+/* 13 */
+
+SELECT MAX(Transazioni) AS MAX
+FROM (
+      SELECT IdCliente, COUNT(IdFattura) AS Transazioni
+      FROM dbo.Fatture
+      GROUP BY IdCliente
+      ) AS Tab1
+
+
+/* 14 */
+
+SELECT Denominazione
+FROM dbo.Fornitori AS Fo
+WHERE NOT EXISTS (SELECT * 
+                  FROM dbo.Fatture AS Fa  
+                  WHERE Fa.IdFornitore = Fo.IdFornitore
+                 )
+
+
+/* 15 */
+
+SELECT *
+FROM dbo.Fatture
+WHERE Importo > (SELECT AVG(Importo)
+                 FROM dbo.Fatture
+                 WHERE Tipologia = 'V'
+                )
+
+
+SELECT * FROM #ProdottiAttivii;
