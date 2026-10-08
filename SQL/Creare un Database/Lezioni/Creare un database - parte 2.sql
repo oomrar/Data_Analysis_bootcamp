@@ -56,7 +56,7 @@ tra le chiavi primarie delle due tabelle */
 � la molti a uno. Procediamo dunque con la modifica della tabella
 dbo.Film cos� come indicato nella relativa soluzione */
 
-ALTER TABLE dbo.FILM ADD IdRegista INT NOT NULL DEFAULT;
+ALTER TABLE dbo.FILM ADD IdRegista INT NOT NULL DEFAULT
 
 /*Su questa nuova colonna andremo a creare un vincolo di
 Chiave Esterna. Con questo vincolo non sar� possibile 
