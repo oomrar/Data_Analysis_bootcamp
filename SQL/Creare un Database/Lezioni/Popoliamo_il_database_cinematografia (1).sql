@@ -76,3 +76,6 @@ SELECT YEAR(DataUscita) AS Anno,
 FROM   dbo.Film
 GROUP BY YEAR(DataUscita),
 	MONTH(DataUscita);
+
+
+
