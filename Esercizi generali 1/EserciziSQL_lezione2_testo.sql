@@ -33,8 +33,7 @@ SELECT SUM(FP.Sconto) AS TotaleSconti
 FROM dbo.FattureProdotti AS FP 
 INNER JOIN dbo.Fatture AS F  
 ON FP.IdFattura = F.IdFattura
-GROUP BY YEAR(DataFattura)
-HAVING Year(DataFattura) = 2019;
+WHERE YEAR(F.DataFattura) = 2019;
 
 
 
@@ -42,9 +41,8 @@ HAVING Year(DataFattura) = 2019;
 Quante fatture sono state pagate in ritardo?  */
 
 SELECT COUNT(*) AS ConteggioFattureRitardo
-FROM (SELECT *
 FROM dbo.Fatture
-WHERE DataPagamento > DataTerminePagamento) AS tab1;
+WHERE DataPagamento > DataTerminePagamento;
 
 /* Esercizio 3
 Calcolare la somma delle spese di spedizione,
@@ -66,12 +64,7 @@ il cliente ha diritto a un rimborso di 1,5 euro
 per ogni giorno di ritardo. Calcolare i rimborsi del 2018.  */
 
 
-
-SELECT SUM(DATEDIFF(DAY, DataTerminePagamento, DataPagamento) * 1.5) AS TotaleRimborsi
-FROM (
-	SELECT DataPagamento,DataTerminePagamento
-	FROM dbo.Fatture
-	WHERE DataPagamento > DataTerminePagamento
-	AND YEAR(DataFattura) = 2018
-) AS tab1;
-
+SELECT SUM(DATEDIFF(DAY, DataArrivoRichiesta, DataArrivoEffettiva)*1.5) AS Rimborso
+FROM dbo.Fatture
+WHERE DataArrivoEffettiva > DataArrivoRichiesta
+AND YEAR(DataFattura) = 2018;
