@@ -47,6 +47,25 @@ WHERE (MONTH(f.DataFattura) = 02 AND YEAR(f.DataFattura) = 2018);
 Trovare prodotti che non sono 
 stati mai venduti nel 2018  */
 
+SELECT DISTINCT p.IdProdotto, p.NomeProdotto
+FROM dbo.Prodotti AS p
+LEFT JOIN dbo.FattureProdotti AS fp  
+ON p.IdProdotto = fp.IdProdotto
+LEFT JOIN dbo.Fatture AS f  
+ON fp.IdFattura = f.IdFattura
+EXCEPT
+SELECT DISTINCT p.IdProdotto, p.NomeProdotto
+FROM dbo.Prodotti AS p
+LEFT JOIN dbo.FattureProdotti AS fp  
+ON p.IdProdotto = fp.IdProdotto
+LEFT JOIN dbo.Fatture AS f  
+ON fp.IdFattura = f.IdFattura
+WHERE YEAR(f.DataFattura) = 2018;
+
+
+
+
+
 
 /* Esercizio 10
 Visualizzare l'elenco delle fatture con in aggiunta
