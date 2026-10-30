@@ -63,15 +63,25 @@ ON fp.IdFattura = f.IdFattura
 WHERE YEAR(f.DataFattura) = 2018;
 
 
-
-
-
-
 /* Esercizio 10
 Visualizzare l'elenco delle fatture con in aggiunta
 una colonna valorizzata soltanto per i clienti 
 della Lombardia, riportante la mail del cliente  */
 
+SELECT f.IdFattura,
+	 (CASE 
+	 	WHEN c.Regione = 'Lombardia' THEN c.Email 
+		ELSE NULL
+	END) AS Email
+FROM dbo.Fatture AS f
+INNER JOIN dbo.Clienti AS c
+ON f.IdCliente = c.IdCliente
 
 /* Esercizio 11
 Estrarre corrieri che non hanno fatture associate */
+
+SELECT DISTINCT c.IdCorriere, c.Denominazione
+FROM dbo.Corrieri AS c  
+LEFT JOIN dbo.Fatture AS f  
+ON c.IdCorriere = f.IdCorriere
+WHERE f.IdCorriere IS NULL;
