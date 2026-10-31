@@ -22,12 +22,28 @@ dbo.Prodotti (IdProdotto PK, NomeProdotto, DescrizioneProdotto,
 
 /* Esercizio 3 
 Contare il numero di prodotti per cui il prezzo medio 
-di vendita nel 2018 è maggiore del prezzo consigliato */
+di vendita nel 2018 ï¿½ maggiore del prezzo consigliato */
+
+WITH TabPrezzoMedio AS(
+	SELECT p.IdProdotto, p.PrezzoConsigliato, AVG(fp.PrezzoUnitario) AS PrezzoMedio
+	FROM dbo.Prodotti AS p  
+	INNER JOIN dbo.FattureProdotti AS fp  
+	ON p.IdProdotto = fp.IdProdotto
+	INNER JOIN dbo.Fatture AS f  
+	ON fp.IdFattura = f.IdFattura
+	WHERE YEAR(f.DataFattura) = 2018
+	GROUP BY p.IdProdotto, p.PrezzoConsigliato, YEAR(f.DataFattura)
+	HAVING AVG(fp.PrezzoUnitario) > p.PrezzoConsigliato)
+
+SELECT COUNT(*) AS Conteggio
+FROM TabPrezzoMedio;
+
+
 
 
 /* Esercizio 4
 Riportare per ogni fattura la somma tra
-- l’importo totale (calcolabile come 
+- lï¿½importo totale (calcolabile come 
 prodotto di quantita*prezzoUnitario) 
 - la spesa di spedizione
 Attenzione alle duplicazioni causate da join. 
@@ -35,6 +51,19 @@ Attenzione alle duplicazioni causate da join.
 Ps. supponiamo che tutte le fatture siano presenti 
 sia nella tabella Fatture che nella
 tabella FattureProdotti */
+
+WITH SenzaSpese AS(
+SELECT f.IdFattura, 
+		f.Spedizione,
+		SUM(fp.Quantita * fp.PrezzoUnitario) AS ImportoTotale
+FROM dbo.Fatture AS f 
+INNER JOIN dbo.FattureProdotti AS fp 
+ON f.IdFattura = fp.IdFattura
+GROUP BY f.IdFattura, f.Spedizione)
+
+SELECT IdFattura, (ImportoTotale + (COALESCE (Spedizione, 0))) AS ImportoComplessivo
+FROM SenzaSpese;
+
 
 
 USE CorsoSQL;
@@ -57,4 +86,26 @@ Nel database CorsoSQL calcolare:
 - la somma annua delle fatture con tipologia A
 - la somma annua delle fatture con tipologia V
 - la differenza annua tra la somma delle fatture 
-con tipologia A la somma delle fatture con tipologia */ 
+con tipologia A e la somma delle fatture con tipologia B */ 
+
+WITH TipA AS (
+	SELECT YEAR(DataFattura) AS Anno, SUM(Importo) AS SommaAnnua
+	FROM dbo.Fatture
+	WHERE Tipologia = 'A'
+	GROUP BY YEAR(DataFattura)),
+	TipV AS(
+	SELECT YEAR(DataFattura) AS Anno, SUM(Importo) AS SommaAnnua
+	FROM dbo.Fatture
+	WHERE Tipologia = 'V'
+	GROUP BY YEAR(DataFattura)
+	)
+
+SELECT COALESCE(A.Anno, V.Anno) AS Anno,
+	COALESCE(A.SommaAnnua, 0) AS TipologiaA,
+	COALESCE(V.SommaAnnua, 0) AS TipologiaV,
+	(COALESCE(A.SommaAnnua, 0) - COALESCE(V.SommaAnnua, 0)) AS Differenza
+FROM TipA AS A
+FULL JOIN TipV AS V  
+ON A.Anno = V.Anno;
+
+
